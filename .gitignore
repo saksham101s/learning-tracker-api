@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+fastapi-env/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+
+# Pytest
+.pytest_cache/

@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-jose[cryptography] #for JWT
+passlib[bcrypt]  #for hashing passwords
+python-dotenv  #to load env vars
