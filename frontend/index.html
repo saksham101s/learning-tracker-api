@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learning Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar fade-in">
+    <h1>Learning Tracker</h1>
+    <div>
+      <button id="themeToggle">🌙</button>
+      <button id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+  </nav>
+
+  <section id="auth" class="slide-up">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginError" class="error"></div>
+  </section>
+
+  <section id="dashboard" style="display:none;" class="slide-up">
+    <h2>Dashboard</h2>
+
+    <!-- Logs -->
+    <div id="logForm">
+      <h3>Add Learning Log</h3>
+      <input type="date" id="logDate" />
+      <input type="text" id="logPlatform" placeholder="Platform (LeetCode, GFG)" />
+      <input type="text" id="logTopics" placeholder="Topics Covered" />
+      <input type="number" step="0.1" id="logTime" placeholder="Time Spent (hrs)" />
+      <input type="number" id="logProblems" placeholder="Problems Solved" />
+      <button id="addLogBtn">Add Log</button>
+      <div id="logError" class="error"></div>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats">
+      <h3>Stats</h3>
+      <p>Total Time: <span id="totalTime">0</span> hrs</p>
+      <p>Total Problems: <span id="totalProblems">0</span></p>
+    </div>
+
+    <!-- Goals -->
+    <div id="goals">
+      <h3>Goals</h3>
+      <ul id="goalsList"></ul>
+      <input type="text" id="goalDesc" placeholder="New goal description" />
+      <input type="number" id="goalTarget" placeholder="Target problems" />
+      <input type="date" id="goalDeadline" />
+      <button id="addGoalBtn">Add Goal</button>
+      <div id="goalError" class="error"></div>
+    </div>
+
+    <!-- History -->
+    <div id="history">
+      <h3>Recent Logs</h3>
+      <ul id="logsList"></ul>
+    </div>
+
+    <!-- Placeholders -->
+    <div id="integration">
+      <h3>Integrations</h3>
+      <button id="fetchGithubBtn">Fetch GitHub Stats</button>
+      <button id="fetchLeetBtn">Fetch LeetCode Stats</button>
+      <div id="integrationOutput"></div>
+    </div>
+  </section>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

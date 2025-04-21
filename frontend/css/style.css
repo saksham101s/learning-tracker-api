@@ -1,0 +1,68 @@
+:root {
+    --bg: #f0f0f0;
+    --card: #fff;
+    --text: #333;
+    --primary: #007bff;
+    --primary-dark: #0056b3;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+  }
+  body.dark-mode {
+    --bg: #181818;
+    --card: #242424;
+    --text: #eee;
+    --primary: #66b2ff;
+    --primary-dark: #3399ff;
+  }
+  .navbar {
+    background: var(--card);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  section {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 12px;
+  }
+  input, button {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: var(--card);
+    color: var(--text);
+  }
+  button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+  }
+  button:hover {
+    background-color: var(--primary-dark);
+  }
+  .error { color: #ff6666; }
+  #history li {
+    background: var(--card);
+    border-left: 4px solid var(--primary);
+  }
+  h3 { margin-top: 1.5rem; }
+  /* Animations */
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .fade-in { animation: fadeIn 0.5s ease-in; }
+  @keyframes slideDown { from { transform: translateY(-20px); } to { transform: translateY(0); } }
+  .slide-up { animation: slideDown 0.5s ease-out; }
+  
+  /* Theme toggle */
+  #themeToggle { font-size:1.2rem; margin-right:1rem; }
