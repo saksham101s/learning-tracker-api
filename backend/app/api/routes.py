@@ -6,6 +6,7 @@ from datetime import date
 
 from app.core.database import SessionLocal
 from app.schemas import schemas
+from app.schemas.schemas import UserCreate, UserOut
 from app.crud import crud
 from app.auth.auth import create_access_token, get_current_user
 
@@ -37,9 +38,9 @@ def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 # ---- User ----
-@router.post("/register", response_model=schemas.UserCreate)
+@router.post("/register", response_model=UserOut)
 def register_user(
-    user: schemas.UserCreate,
+    user: UserCreate,
     db: Session = Depends(get_db)
 ):
     return crud.create_user(db=db, user=user)
