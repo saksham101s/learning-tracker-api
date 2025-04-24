@@ -7,7 +7,7 @@ __pycache__/
 venv/
 env/
 fastapi-env/
-backend/.env
+backend/.env/
 
 # VS Code
 .vscode/
