@@ -5,6 +5,8 @@ from datetime import date
 from app.models.models import User, LearningLog, Goal
 from app.schemas.schemas import UserCreate, LearningLogCreate, GoalCreate
 from passlib.context import CryptContext
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -19,9 +21,13 @@ def get_user_by_username(db: Session, username: str):
 
 def create_user(db: Session, user: UserCreate):
     hashed_password = get_password_hash(user.password)
-    db_user = User(username=user.username, password_hash=hashed_password, email=user.email)
+    db_user = User(username=user.username, email=user.email, password_hash=hashed_password)
     db.add(db_user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()  # VERY important: rollback failed transaction
+        raise HTTPException(status_code=400, detail="Username already exists. Please choose a different one.")
     db.refresh(db_user)
     return db_user
 

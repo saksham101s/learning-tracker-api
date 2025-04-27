@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       {!token ? (
-        <Auth setToken={setToken} />
+        <Auth onLoginSuccess={setToken} />
       ) : (
         <Dashboard token={token} setToken={setToken} />
       )}
@@ -18,3 +18,4 @@ function App() {
 }
 
 export default App;
+

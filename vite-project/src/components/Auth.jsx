@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Auth = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isLogin, setIsLogin] = useState(true); // Login mode or Register mode
+  const [isLogin, setIsLogin] = useState(true); // Login or Register mode
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // 👉 NEW STATE
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true); // 👉 Start loading
 
     try {
       if (isLogin) {
@@ -38,11 +40,13 @@ const Auth = ({ onLoginSuccess }) => {
           throw new Error('Registration failed');
         }
 
-        alert('Registration successful! You can now login.');
-        setIsLogin(true); // Switch back to login mode
+        alert('Registration successful! Now you can login.');
+        setIsLogin(true);
       }
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false); // 👉 Stop loading in any case
     }
   };
 
@@ -74,14 +78,17 @@ const Auth = ({ onLoginSuccess }) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+        <button type="submit" disabled={loading}>
+  {loading ? <div className="spinner"></div> : (isLogin ? 'Login' : 'Register')}
+</button>
+
       </form>
 
       {error && <p className="error">{error}</p>}
 
       <p>
-        {isLogin ? 'Don’t have an account?' : 'Already have an account?'}{' '}
-        <button onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+        <button type="button" onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? 'Register' : 'Login'}
         </button>
       </p>

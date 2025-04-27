@@ -1,125 +1,105 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const Dashboard = ({ token, setToken }) => {
+  const [date, setDate] = useState('');
+  const [platform, setPlatform] = useState('');
+  const [topics, setTopics] = useState('');
+  const [timeSpent, setTimeSpent] = useState('');
+  const [problemsSolved, setProblemsSolved] = useState('');
+  const [logs, setLogs] = useState([]);
+  const [stats, setStats] = useState({ total_time: 0, total_problems: 0 });
 
-function Dashboard({ token, setToken}){
-    const [logs, setLogs] = useState([]);
-    const [totalTime, setTotalTime] = useState(0);
-    const [totalProblems, setTotalProblems] = useState(0);
+  const API_URL = 'http://localhost:8000';
 
-    const[ formData, setFormData] = useState({
-        date: '',
-        platform: '',
-        topics: '',
-        time_spent: '',
-        problems_solved: ''
+  const fetchLogs = async () => {
+    const res = await fetch(`${API_URL}/logs`, {
+      headers: { Authorization: `Bearer ${token}` }
     });
+    const data = await res.json();
+    setLogs(data);
+  };
 
-    const fetchLogs = async () => {
-        try{
-            const res = await axios.get(`${API_URL}/logs`,{
-                headers: {Authorization: `Bearer ${token}`}
-            });
-            setLogs(res.data);
-        }
-        catch (err) {
-            console.error('Failed to load logs:', err);
-        }
+  const fetchStats = async () => {
+    const res = await fetch(`${API_URL}/stats`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    setStats(data);
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+  };
+
+  const handleAddLog = async () => {
+    const payload = {
+      date,
+      platform,
+      topics,
+      time_spent: parseFloat(timeSpent),
+      problems_solved: parseInt(problemsSolved),
     };
 
-    const fetchStats = async () => {
-        try {
-          const res = await axios.get(`${API_URL}/stats`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setTotalTime(res.data.total_time);
-          setTotalProblems(res.data.total_problems);
-        } catch (err) {
-          console.error('Failed to load stats:', err);
-        }
-      };
-    
-      const handleLogSubmit = async () => {
-        try {
-          await axios.post(`${API_URL}/log`, formData, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setFormData({ date: '', platform: '', topics: '', time_spent: '', problems_solved: '' });
-          fetchLogs();
-          fetchStats();
-        } catch (err) {
-          console.error('Failed to submit log:', err);
-        }
-      };
-    
-      const handleLogout = () => {
-        setToken(null);
-      };
-    
-      useEffect(() => {
-        fetchLogs();
-        fetchStats();
-      }, []);
+    await fetch(`${API_URL}/log`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
 
-      return (
-        <div className="dashboard">
-      <h2>Welcome to your Dashboard</h2>
-      <button onClick={handleLogout}>Logout</button>
+    setDate('');
+    setPlatform('');
+    setTopics('');
+    setTimeSpent('');
+    setProblemsSolved('');
+    fetchLogs();
+    fetchStats();
+  };
 
-      <h3>Add Learning Log</h3>
-      <div className="log-form">
-        <input
-          type="date"
-          value={formData.date}
-          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Platform"
-          value={formData.platform}
-          onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Topics Covered"
-          value={formData.topics}
-          onChange={(e) => setFormData({ ...formData, topics: e.target.value })}
-        />
-        <input
-          type="number"
-          step="0.1"
-          placeholder="Time Spent (hrs)"
-          value={formData.time_spent}
-          onChange={(e) => setFormData({ ...formData, time_spent: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Problems Solved"
-          value={formData.problems_solved}
-          onChange={(e) => setFormData({ ...formData, problems_solved: e.target.value })}
-        />
-        <button onClick={handleLogSubmit}>Add Log</button>
+  useEffect(() => {
+    fetchLogs();
+    fetchStats();
+  }, []);
+
+  return (
+    <div className="dashboard">
+      <div className="topbar">
+        <h1>Learning Tracker</h1>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+      </div>
+
+      <div className="card">
+        <h2>Add Learning Log</h2>
+        <div className="form">
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="text" placeholder="Platform" value={platform} onChange={(e) => setPlatform(e.target.value)} />
+          <input type="text" placeholder="Topics Covered" value={topics} onChange={(e) => setTopics(e.target.value)} />
+          <input type="number" placeholder="Time Spent (hrs)" value={timeSpent} onChange={(e) => setTimeSpent(e.target.value)} />
+          <input type="number" placeholder="Problems Solved" value={problemsSolved} onChange={(e) => setProblemsSolved(e.target.value)} />
+          <button onClick={handleAddLog}>Add Log</button>
+        </div>
       </div>
 
       <div className="stats">
-        <h3>Your Stats</h3>
-        <p>Total Time: {totalTime} hrs</p>
-        <p>Total Problems Solved: {totalProblems}</p>
+        <h2>Your Stats</h2>
+        <p>Total Time: {stats.total_time} hrs</p>
+        <p>Total Problems Solved: {stats.total_problems}</p>
       </div>
 
       <div className="logs">
-        <h3>Learning Logs</h3>
+        <h2>Learning Logs</h2>
         <ul>
           {logs.map((log, index) => (
             <li key={index}>
-              {log.date}: {log.platform} - {log.problems_solved} problems in {log.time_spent} hrs
+              <strong>{log.date}</strong> — {log.platform}: {log.problems_solved} problems in {log.time_spent} hrs
             </li>
           ))}
         </ul>
       </div>
     </div>
-    );
-}
+  );
+};
 
 export default Dashboard;
