@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
-
+from app.models.models import User
 from app.core.database import SessionLocal
 from app.schemas import schemas
 from app.schemas.schemas import UserCreate, UserOut
@@ -56,23 +56,21 @@ def log_learning(
 
 @router.get("/logs", response_model=List[schemas.LearningLogOut])
 def read_logs(
-    user_id: int = Query(..., description="ID of the user"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    db: Session = Depends(get_db)
 ):
-    return crud.get_logs_by_user(db=db, user_id=user_id, start_date=start_date, end_date=end_date)
+    return crud.get_logs_by_user(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
 
-# ---- Stats ----
 @router.get("/stats", response_model=schemas.Stats)
 def read_stats(
-    user_id: int = Query(..., description="ID of the user"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    db: Session = Depends(get_db)
 ):
-    return crud.get_stats(db=db, user_id=user_id, start_date=start_date, end_date=end_date)
-
+    return crud.get_stats(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
 # ---- Goals ----
 @router.post("/goal", response_model=schemas.GoalOut)
 def set_goal(

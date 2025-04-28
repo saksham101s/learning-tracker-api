@@ -49,7 +49,8 @@ def get_logs_by_user(
         query = query.filter(LearningLog.date >= start_date)
     if end_date:
         query = query.filter(LearningLog.date <= end_date)
-    return query.order_by(LearningLog.date.desc()).all()
+    return query.order_by(LearningLog.Date.desc()).all()
+
 
 # ---- Stats ----
 def get_stats(
